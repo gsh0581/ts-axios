@@ -1,14 +1,18 @@
-import { AxiosRequestConfig, AxoisPromise,AxoisResponse } from './types/index';
+import { AxiosRequestConfig, AxoisPromise, AxoisResponse } from './types/index';
 import { parseHeaders } from './helpers/headers';
-
+import { createError } from './helpers/error';
 
 export default function xhr(config: AxiosRequestConfig): AxoisPromise {
-    return new Promise((resolve) => {
+    return new Promise((resolve,reject) => {
 
-        const { data = null, url, method = 'get', headers, responseType } = config
+        const { data = null, url, method = 'get', headers, responseType,timeout } = config
 
         const request = new XMLHttpRequest()
 
+        if(timeout){
+            request.timeout = timeout
+        }
+       
         if (responseType) {
             request.responseType = responseType
         }
@@ -17,6 +21,9 @@ export default function xhr(config: AxiosRequestConfig): AxoisPromise {
 
         request.onreadystatechange = function handleLoad() {
             if (request.readyState !== 4) {
+                return
+            }
+            if(request.status === 0){
                 return
             }
             const responseHeaders = parseHeaders(request.getAllResponseHeaders()) 
@@ -29,8 +36,23 @@ export default function xhr(config: AxiosRequestConfig): AxoisPromise {
                 config,
                 request
             }
-            resolve(response)
+            handleResponse(response)
+
+            function handleResponse(response:AxoisResponse){
+                if(response.status >=200 && response.status < 300){
+                    resolve(response)
+                }else{
+                    reject(createError(
+                        `Request failed with status code ${response.status}`,
+                        config,
+                        null,
+                        request,
+                        response
+                        ))
+                }
+            }
         }
+        
         Object.keys(headers).forEach((name) => {
             if (data === null && name.toLowerCase() === 'content-type') {
                 delete headers[name]
@@ -39,6 +61,23 @@ export default function xhr(config: AxiosRequestConfig): AxoisPromise {
                 request.setRequestHeader(name, headers[name])
             }
         })
+
+        request.onerror = function handleError(){
+            reject(createError(
+                `Network Error`,
+                config,
+                null,
+                request
+            ))
+        }
+        request.ontimeout = function handleTimeout(){
+            reject(createError(
+                `Timeout of ${timeout} ms exceeded`,
+                config,
+                'ECONNABORTED',
+                request
+            ))
+        }
         request.send(data)
     })
 }
