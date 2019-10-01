@@ -52,4 +52,5 @@ export interface AxoisError extends Error {
 
 export interface AxoisInstance extends Axios {
   (config: AxiosRequestConfig): AxoisPromise
+  (url:string,config?:AxiosRequestConfig):AxoisPromise
 }
