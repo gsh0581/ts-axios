@@ -33,14 +33,17 @@ registerErrorRouter()
 registerExtendRouter()
 registerBaseRouter()
 registerSimpleRouter()
-function registerSimpleRouter(){
+registerInterceptorRouter()
+
+function registerSimpleRouter() {
   router.get('/simple/get', function (req, res) {
     res.json({
       msg: 'hello world'
     })
   })
 }
-function registerBaseRouter(){
+
+function registerBaseRouter() {
   router.get('/base/get', function (req, res) {
     res.json(req.query)
   })
@@ -60,29 +63,31 @@ function registerBaseRouter(){
     })
   })
 }
-function registerErrorRouter(){
-  router.get('/error/get',function(req,res){
-    if(Math.random() > 0.5){
+
+function registerErrorRouter() {
+  router.get('/error/get', function (req, res) {
+    if (Math.random() > 0.5) {
       res.json({
-        msg:'hello world'
+        msg: 'hello world'
       })
-    }else{
+    } else {
       res.status(500)
       res.end()
     }
   })
-  router.get('/error/timeout',function(req,res){
-    setTimeout(()=>{
+  router.get('/error/timeout', function (req, res) {
+    setTimeout(() => {
       res.json({
-        msg:'hello world'
+        msg: 'hello world'
       })
-    },3000)
+    }, 3000)
   })
 }
-function registerExtendRouter (){
+
+function registerExtendRouter() {
   router.get('/extend/get', function (req, res) {
     res.json({
-      msg:"hello world"
+      msg: "hello world"
     })
   })
   router.options('/extend/options', function (req, res) {
@@ -105,13 +110,19 @@ function registerExtendRouter (){
   })
   router.get('/extend/user', function (req, res) {
     res.json({
-      code:0,
-      message:'success',
-      result:{
-        name:'jack',
-        age:18
+      code: 0,
+      message: 'success',
+      result: {
+        name: 'jack',
+        age: 18
       }
     })
+  })
+}
+
+function registerInterceptorRouter() {
+  router.get('/interceptor/get', function (req, res) {
+    res.end('hello')
   })
 }
 app.use(router)
