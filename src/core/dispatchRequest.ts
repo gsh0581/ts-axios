@@ -4,6 +4,7 @@ import { buildURL } from '../helpers/url'
 import { flattenHeaders } from '../helpers/headers'
 import transform from './transfrom'
 export default function dispatchRequest(config: AxiosRequestConfig): AxoisPromise {
+  throwIfCancellationRequested(config)
   processConfig(config)
   return xhr(config).then(res => {
     return transfromResponseData(res)
@@ -24,4 +25,9 @@ function transformURL(config: AxiosRequestConfig): string {
 function transfromResponseData(res: AxoisResponse): AxoisResponse {
   res.data = transform(res.data, res.headers, res.config.transformResponse)
   return res
+}
+function throwIfCancellationRequested(config: AxiosRequestConfig): void {
+  if (config.cancelToken) {
+    config.cancelToken.throwIfRequested()
+  }
 }
