@@ -61,6 +61,7 @@ export default function xhr(config: AxiosRequestConfig): AxoisPromise {
         request.setRequestHeader(name, headers[name])
       }
     })
+    request.send(data)
 
     request.onerror = function handleError() {
       reject(createError(`Network Error`, config, null, request))
@@ -68,6 +69,5 @@ export default function xhr(config: AxiosRequestConfig): AxoisPromise {
     request.ontimeout = function handleTimeout() {
       reject(createError(`Timeout of ${timeout} ms exceeded`, config, 'ECONNABORTED', request))
     }
-    request.send(data)
   })
 }
