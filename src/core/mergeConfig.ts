@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from '../types/index'
 import { isPlainObject, deepMerge } from '../helpers/util'
 
 const strats = Object.create(null)
-
+// 默认合并策略
 function defaultStrat(val1: any, val2: any): any {
   return typeof val2 !== 'undefined' ? val2 : val1
 }
@@ -12,7 +12,7 @@ function fromVal2Strat(val1: any, val2: any): any {
     return val2
   }
 }
-
+// 复杂对象合并，如headers
 function deepMergeStrat(val1: any, val2: any): any {
   if (isPlainObject(val2)) {
     return deepMerge(val1, val2)
@@ -24,7 +24,7 @@ function deepMergeStrat(val1: any, val2: any): any {
     return val1
   }
 }
-
+// url params data 属性，直接从自定义中取出并合并
 const stratKeysFromVal2 = ['url', 'params', 'data']
 
 stratKeysFromVal2.forEach(key => {

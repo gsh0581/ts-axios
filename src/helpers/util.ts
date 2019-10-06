@@ -29,7 +29,7 @@ export function deepMerge(...objs: any[]): any {
           if (isPlainObject(result[key])) {
             result[key] = deepMerge(result[key], val)
           } else {
-            result[key] = deepMerge(result[key])
+            result[key] = deepMerge({}, val)
           }
         } else {
           result[key] = val

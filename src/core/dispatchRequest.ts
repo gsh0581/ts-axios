@@ -13,7 +13,7 @@ function processConfig(config: AxiosRequestConfig): void {
   config.url = transformURL(config)
   config.headers = transformHeaders(config)
   config.data = transformRequestData(config)
-  config.headers = flattenHeaders(config.headers, config.method as Method)
+  config.headers = flattenHeaders(config.headers, config.method as Method) // 添加到前置方法中
 }
 
 function transformURL(config: AxiosRequestConfig): string {

@@ -34,7 +34,7 @@ registerExtendRouter()
 registerBaseRouter()
 registerSimpleRouter()
 registerInterceptorRouter()
-
+registerConfigRouter()
 function registerSimpleRouter() {
   router.get('/simple/get', function (req, res) {
     res.json({

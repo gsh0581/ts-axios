@@ -41,11 +41,13 @@ export function parseHeaders(headers: string): any {
   })
   return parsed
 }
+// headers降维，提取common、get/post中的headers字段
+// 通过deepMerge拷贝到headers这一级，然后再将其删掉
 export function flattenHeaders(headers: any, method: Method): any {
   if (!headers) {
     return headers
   }
-  headers = deepMerge(headers.common, headers[method], headers)
+  headers = deepMerge(headers.common || {}, headers[method] || {}, headers)
   const methodsToDelete = ['delete', 'get', 'head', 'options', 'post', 'put', 'patch', 'common']
   methodsToDelete.forEach(method => {
     delete headers[method]
